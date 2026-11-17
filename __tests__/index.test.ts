@@ -112,3 +112,101 @@ describe('tidy: single-line rewrites', () => {
     expect(tidy('done   \n  a  b  ')).toBe('done\n  a  b');
   });
 });
+
+describe('tidy: cursor movement', () => {
+  it('cursor up (CUU) keeps the column', () => {
+    expect(tidy('abc\ndef\x1b[1AX')).toBe('abcX\ndef');
+  });
+
+  it('cursor up moves 1 row when the parameter is missing or 0', () => {
+    expect(tidy('a\nb\x1b[AX')).toBe('aX\nb');
+    expect(tidy('a\nb\x1b[0AX')).toBe('aX\nb');
+  });
+
+  it('cursor up stops at the first row', () => {
+    expect(tidy('a\x1b[5AX')).toBe('aX');
+  });
+
+  it('newline after cursor up reuses the existing row', () => {
+    expect(tidy('line1\nline2\x1b[A\rL\nM')).toBe('Line1\nMine2');
+  });
+
+  it('cursor down (CUD) keeps the column and creates rows', () => {
+    expect(tidy('a\x1b[2Bb')).toBe('a\n\n b');
+    expect(tidy('a\x1b[Bb')).toBe('a\n b');
+  });
+
+  it('cursor forward (CUF) leaves blanks', () => {
+    expect(tidy('a\x1b[3Cb')).toBe('a   b');
+  });
+
+  it('cursor back (CUB) moves left and stops at column 0', () => {
+    expect(tidy('abc\x1b[2DX')).toBe('aXc');
+    expect(tidy('abc\x1b[9DX')).toBe('Xbc');
+  });
+
+  it('cursor to column (CHA) is 1-based and defaults to column 1', () => {
+    expect(tidy('abc\x1b[Gx')).toBe('xbc');
+    expect(tidy('abc\x1b[2Gx')).toBe('axc');
+  });
+
+  it('erase in display (ED 0) clears from the cursor to the end of the screen', () => {
+    expect(tidy('one\ntwo\nthree\x1b[2A\r\x1b[Jdone')).toBe('done');
+  });
+
+  it('replays a multi-line spinner (log-update style redraw)', () => {
+    const eraseThreeLines = '\x1b[2K\x1b[1A\x1b[2K\x1b[1A\x1b[2K\x1b[G';
+    const raw =
+      '\x1b[?25l' +
+      '\x1b[33m⠋\x1b[39m build\n\x1b[33m⠋\x1b[39m test\n' +
+      eraseThreeLines +
+      '\x1b[32m✓\x1b[39m build\n\x1b[33m⠙\x1b[39m test\n' +
+      eraseThreeLines +
+      '\x1b[32m✓\x1b[39m build\n\x1b[32m✓\x1b[39m test\n' +
+      '\x1b[?25h';
+    expect(tidy(raw)).toBe('✓ build\n✓ test\n');
+  });
+
+  it('cursor position (CUP) is 1-based row;col and defaults to the top-left', () => {
+    expect(tidy('abc\ndef\x1b[1;2HX')).toBe('aXc\ndef');
+    expect(tidy('abc\x1b[HX')).toBe('Xbc');
+    expect(tidy('a\x1b[3;3HX')).toBe('a\n\n  X');
+  });
+
+  it('erase in display (ED 1) clears from the screen top through the cursor', () => {
+    expect(tidy('one\ntwo\nthree\x1b[2D\x1b[1J')).toBe('\n\n    e');
+  });
+
+  it('keeps output above a multi-line redraw untouched', () => {
+    const raw = '$ pnpm build\n' + 'a: 10%\nb: 10%\n' + '\x1b[2A\r\x1b[J' + 'a: done\nb: done\n';
+    expect(tidy(raw)).toBe('$ pnpm build\na: done\nb: done\n');
+  });
+});
+
+describe('tidy: clear screen (ED 2)', () => {
+  const CLEAR = '\x1b[H\x1b[2J\x1b[3J';
+
+  it('keeps earlier output by default and starts a fresh screen below it', () => {
+    expect(tidy('run 1\n' + CLEAR + 'run 2\n')).toBe('run 1\nrun 2\n');
+  });
+
+  it('never lets the new screen overwrite the old one', () => {
+    expect(tidy('aaaa\nbbbb\n' + CLEAR + 'x\n')).toBe('aaaa\nbbbb\nx\n');
+  });
+
+  it('does not add blank rows when clearing an empty screen', () => {
+    expect(tidy(CLEAR + 'hi')).toBe('hi');
+  });
+
+  it('positions the cursor relative to the new screen', () => {
+    expect(tidy('old\n' + CLEAR + 'a\nb\x1b[1;1HX')).toBe('old\nX\nb');
+  });
+
+  it('stops cursor up at the top of the new screen', () => {
+    expect(tidy('old\n' + CLEAR + 'new\x1b[5AX')).toBe('old\nnewX');
+  });
+
+  it('drops earlier output with clearScreen: drop', () => {
+    expect(tidy('run 1\n' + CLEAR + 'run 2\n', { clearScreen: 'drop' })).toBe('run 2\n');
+  });
+});

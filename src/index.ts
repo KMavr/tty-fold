@@ -3,16 +3,30 @@ const BEL = '\x07';
 const CR = '\r';
 const LF = '\n';
 const BS = '\b';
+const CUU = 'A';
+const CUD = 'B';
+const CUF = 'C';
+const CUB = 'D';
+const CHA = 'G';
+const CUP = 'H';
+const ED = 'J';
 const EL = 'K';
 const CSI_START = '[';
 const OSC_START = ']';
 const ST_FINAL = '\\';
+
+export type TidyOptions = {
+  /** What `ESC[2J` does to earlier output: keep it above the new screen (default) or drop it. */
+  clearScreen?: 'keep' | 'drop';
+};
 
 type State = 'text' | 'esc' | 'csi' | 'osc' | 'oscEsc';
 type Screen = {
   lines: string[][];
   row: number;
   col: number;
+  top: number;
+  clearScreen: 'keep' | 'drop';
 };
 type Csi = {
   params: string;
@@ -72,14 +86,88 @@ function eraseInLine(screen: Screen, mode: number): void {
   }
 }
 
+function ensureRows(screen: Screen): void {
+  for (let i = 0; i <= screen.row; i++) {
+    screen.lines[i] ??= [];
+  }
+}
+
+function isBlank(line: string[]): boolean {
+  return line.join('').trim() === '';
+}
+
+function clearScreen(screen: Screen): void {
+  const offset = screen.row - screen.top;
+  if (screen.clearScreen === 'drop') {
+    screen.lines = [];
+    screen.top = 0;
+  } else {
+    while (screen.lines.length > 0 && isBlank(screen.lines[screen.lines.length - 1])) {
+      screen.lines.pop();
+    }
+    screen.top = screen.lines.length;
+  }
+  screen.row = screen.top + offset;
+  ensureRows(screen);
+}
+
+function eraseInDisplay(screen: Screen, mode: number): void {
+  switch (mode) {
+    case 0:
+      eraseInLine(screen, 0);
+      screen.lines.length = screen.row + 1;
+      break;
+    case 1:
+      for (let i = screen.top; i < screen.row; i++) {
+        screen.lines[i] = [];
+      }
+      eraseInLine(screen, 1);
+      break;
+    case 2:
+      clearScreen(screen);
+      break;
+  }
+}
+
 function handleCsi(screen: Screen, char: string, csi: Csi): State {
   if (!isFinalByte(char)) {
     csi.params += char;
     return 'csi';
   }
-  if (char === EL) {
-    eraseInLine(screen, Number(csi.params));
+
+  const params = csi.params.split(';').map(Number);
+  const n = params[0];
+
+  switch (char) {
+    case EL:
+      eraseInLine(screen, n);
+      break;
+    case ED:
+      eraseInDisplay(screen, n);
+      break;
+    case CUP:
+      screen.row = screen.top + (n || 1) - 1;
+      screen.col = (params[1] || 1) - 1;
+      ensureRows(screen);
+      break;
+    case CUU:
+      screen.row = Math.max(screen.top, screen.row - (n || 1));
+      break;
+    case CUD:
+      screen.row += n || 1;
+      ensureRows(screen);
+      break;
+    case CUF:
+      screen.col += n || 1;
+      break;
+    case CUB:
+      screen.col = Math.max(0, screen.col - (n || 1));
+      break;
+    case CHA:
+      screen.col = (n || 1) - 1;
+      break;
   }
+
   return 'text';
 }
 
@@ -97,8 +185,14 @@ function handleOscEsc(char: string): State {
   return char === ST_FINAL ? 'text' : 'osc';
 }
 
-export function tidy(input: string): string {
-  const screen: Screen = { lines: [[]], row: 0, col: 0 };
+export function tidy(input: string, options: TidyOptions = {}): string {
+  const screen: Screen = {
+    lines: [[]],
+    row: 0,
+    col: 0,
+    top: 0,
+    clearScreen: options.clearScreen ?? 'keep',
+  };
   let state: State = 'text';
   const csi: Csi = { params: '' };
 
