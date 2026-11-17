@@ -2,6 +2,8 @@ const ESC = '\x1b';
 const BEL = '\x07';
 const CR = '\r';
 const LF = '\n';
+const BS = '\b';
+const EL = 'K';
 const CSI_START = '[';
 const OSC_START = ']';
 const ST_FINAL = '\\';
@@ -11,6 +13,9 @@ type Screen = {
   lines: string[][];
   row: number;
   col: number;
+};
+type Csi = {
+  params: string;
 };
 
 function isFinalByte(char: string): boolean {
@@ -28,6 +33,8 @@ function handleText(screen: Screen, char: string): State {
     screen.row++;
     screen.col = 0;
     screen.lines[screen.row] ??= [];
+  } else if (char === BS) {
+    screen.col = Math.max(screen.col - 1, 0);
   } else {
     screen.lines[screen.row][screen.col] = char;
     screen.col++;
@@ -35,8 +42,9 @@ function handleText(screen: Screen, char: string): State {
   return 'text';
 }
 
-function handleEsc(char: string): State {
+function handleEsc(char: string, csi: Csi): State {
   if (char === CSI_START) {
+    csi.params = '';
     return 'csi';
   }
   if (char === OSC_START) {
@@ -48,8 +56,31 @@ function handleEsc(char: string): State {
   return 'text';
 }
 
-function handleCsi(char: string): State {
-  return isFinalByte(char) ? 'text' : 'csi';
+function eraseInLine(screen: Screen, mode: number): void {
+  switch (mode) {
+    case 0:
+      screen.lines[screen.row].length = screen.col;
+      break;
+    case 1:
+      for (let i = 0; i <= screen.col; i++) {
+        screen.lines[screen.row][i] = ' ';
+      }
+      break;
+    case 2:
+      screen.lines[screen.row] = [];
+      break;
+  }
+}
+
+function handleCsi(screen: Screen, char: string, csi: Csi): State {
+  if (!isFinalByte(char)) {
+    csi.params += char;
+    return 'csi';
+  }
+  if (char === EL) {
+    eraseInLine(screen, Number(csi.params));
+  }
+  return 'text';
 }
 
 function handleOsc(char: string): State {
@@ -69,6 +100,7 @@ function handleOscEsc(char: string): State {
 export function tidy(input: string): string {
   const screen: Screen = { lines: [[]], row: 0, col: 0 };
   let state: State = 'text';
+  const csi: Csi = { params: '' };
 
   for (const char of input) {
     switch (state) {
@@ -76,10 +108,10 @@ export function tidy(input: string): string {
         state = handleText(screen, char);
         break;
       case 'esc':
-        state = handleEsc(char);
+        state = handleEsc(char, csi);
         break;
       case 'csi':
-        state = handleCsi(char);
+        state = handleCsi(screen, char, csi);
         break;
       case 'osc':
         state = handleOsc(char);
@@ -90,5 +122,11 @@ export function tidy(input: string): string {
     }
   }
 
-  return screen.lines.map((line) => line.join('')).join('\n');
+  return screen.lines
+    .map((line) =>
+      Array.from(line, (c) => c ?? ' ')
+        .join('')
+        .trimEnd(),
+    )
+    .join('\n');
 }
