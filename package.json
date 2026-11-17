@@ -49,7 +49,10 @@
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "prepare": "node -e \"if (process.env.CI) process.exit(0)\" && husky",
+    "prepack": "pnpm build && pnpm lint && pnpm typecheck && pnpm test --run"
   },
   "devEngines": {
     "packageManager": {
@@ -59,10 +62,28 @@
     }
   },
   "packageManager": "pnpm@12.21.0",
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.6",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.1",
     "prettier": "^3.10.1",
-    "typescript": "^7.0.2",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.73.0",
     "vitest": "^5.1.0"
   }
 }
