@@ -1,0 +1,68 @@
+{
+  "name": "tty-fold",
+  "version": "0.0.0",
+  "description": "Turn raw terminal output into the text a human would have seen on screen",
+  "keywords": [
+    "ansi",
+    "terminal",
+    "tty",
+    "escape-codes",
+    "strip-ansi",
+    "spinner",
+    "progress",
+    "logs",
+    "ci",
+    "llm"
+  ],
+  "author": "Konstantinos Mavrikas <mavrikas.konstantinos@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KMavr/tty-fold.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KMavr/tty-fold/issues"
+  },
+  "homepage": "https://github.com/KMavr/tty-fold#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.21.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.21.0",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "prettier": "^3.10.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
