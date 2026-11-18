@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.1](https://github.com/KMavr/tty-fold/compare/tty-fold-v0.1.0...tty-fold-v0.1.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **parser:** drop control characters a terminal does not display ([3379a14](https://github.com/KMavr/tty-fold/commit/3379a146cba3eeedbe1c977bceed1cfd7fa5c945))
+* **screen:** clamp cursor moves to viewport bottom and max column ([0e6a8ed](https://github.com/KMavr/tty-fold/commit/0e6a8ed60230225fc0fede15f72766dbb4a3a7a0))
+
+
+### Performance Improvements
+
+* **screen:** make row allocation linear in tidy() ([af62f97](https://github.com/KMavr/tty-fold/commit/af62f97ebea3486cbd62c280911115a74df273bc))
+* **screen:** store final rows as text to bound memory in tidy() ([0e10a68](https://github.com/KMavr/tty-fold/commit/0e10a68e80549fab4b1b1c8a3a9f28784eaf6836))
+* skip parsing ignored CSI sequences and render lines in one pass ([5d38a8a](https://github.com/KMavr/tty-fold/commit/5d38a8a8579fa9d75292efd0da1f53ce8621739a))
+
 ## 0.1.0 (2026-11-18)
 
 

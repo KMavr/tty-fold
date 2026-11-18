@@ -1,6 +1,6 @@
 {
   "name": "tty-fold",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Turn raw terminal output into the text a human would have seen on screen",
   "keywords": [
     "ansi",
