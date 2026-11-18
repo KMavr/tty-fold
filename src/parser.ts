@@ -12,9 +12,12 @@ import {
   ED,
   EL,
   ESC,
+  FF,
+  HT,
   LF,
   OSC_START,
   ST_FINAL,
+  VT,
 } from './constants.js';
 import type { Screen } from './screen.js';
 
@@ -62,6 +65,12 @@ export class Parser {
   }
 
   private handleText(char: string): State {
+    const code = char.charCodeAt(0);
+    // Printable text is the common case, so check it before the controls (C0 and DEL).
+    if (code >= 0x20 && code !== 0x7f) {
+      this.screen.write(char);
+      return 'text';
+    }
     switch (char) {
       case ESC:
         return 'esc';
@@ -69,13 +78,18 @@ export class Parser {
         this.screen.carriageReturn();
         break;
       case LF:
+      case VT:
+      case FF:
         this.screen.lineFeed();
         break;
       case BS:
         this.screen.backspace();
         break;
-      default:
+      case HT:
         this.screen.write(char);
+        break;
+      default:
+        break;
     }
     return 'text';
   }

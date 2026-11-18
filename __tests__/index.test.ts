@@ -235,6 +235,38 @@ describe('tidy: clear screen (ED 2)', () => {
   });
 });
 
+describe('tidy: control characters', () => {
+  it('drops controls a terminal shows nothing for', () => {
+    expect(tidy('a\x00b\x04c\x07d\x7fe')).toBe('abcde');
+    expect(tidy('\x01\x02\x03\x05\x06\x0e\x0f\x10\x1a\x1c\x1d\x1e\x1fok')).toBe('ok');
+  });
+
+  it('drops a stray BEL outside an OSC sequence', () => {
+    expect(tidy('build failed\x07')).toBe('build failed');
+  });
+
+  it('drops the ^D that macOS `script` writes on empty stdin', () => {
+    expect(tidy('\x04\b\bhello')).toBe('hello');
+    expect(tidy('\x04done')).toBe('done');
+  });
+
+  it('keeps tabs', () => {
+    expect(tidy('a\tb')).toBe('a\tb');
+  });
+
+  it('treats vertical tab and form feed as a line feed', () => {
+    expect(tidy('a\vb\fc')).toBe('a\nb\nc');
+  });
+
+  it('does not take a dropped control as a cell', () => {
+    expect(tidy('ab\x00c\x1b[2Gx')).toBe('axc');
+  });
+
+  it('keeps characters outside ASCII', () => {
+    expect(tidy('é ✓ 😀 中')).toBe('é ✓ 😀 中');
+  });
+});
+
 describe('tidy: private sequences', () => {
   it('ignores cursor movement with a private marker', () => {
     expect(tidy('a\nb\x1b[?5AX')).toBe('a\nbX');

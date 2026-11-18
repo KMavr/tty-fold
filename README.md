@@ -108,6 +108,7 @@ If your commands run without a TTY and print plain text, there is little to save
 - **Cursor movement:** up, down, forward, back, to a column (`ESC[G`) and to a position (`ESC[H`). Like a real terminal, the cursor stops at the bottom of the screen (`height` rows). Columns are capped at 10,000.
 - **Erase in display:** `ESC[J`, modes 0–2. Mode 3 (clear scrollback) is ignored.
 - **Private sequences** such as `ESC[?25l` (hide cursor) and `ESC[?2026h` (synchronized output) are removed.
+- **Control characters** a terminal shows nothing for, such as NUL, a stray BEL or `^D`, are removed. Vertical tab and form feed start a new line.
 
 What a human sees is what you get. Spaces the program printed are kept, and gaps the cursor skipped over are trimmed from line ends. Trailing blank lines are dropped.
 
@@ -134,7 +135,7 @@ Real captures from a pty, in [`fixtures/`](fixtures). Tokens are counted with [`
 
 ### Speed
 
-Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 20–23 MB/s (200,000 lines in under 350 ms), whether the input is plain, coloured or full of spinner redraws.
+Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 20–25 MB/s (200,000 lines in about 300 ms or less), whether the input is plain, coloured or full of spinner redraws.
 
 Run it yourself with `pnpm bench`.
 
