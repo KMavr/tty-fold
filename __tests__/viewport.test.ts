@@ -32,6 +32,54 @@ describe('tidy: height (viewport)', () => {
     expect(tidy('a\nb\nc\n' + CLEAR + 'new', { height: 2 })).toBe('a\nb\nc\nnew');
   });
 
+  it('stops cursor down and cursor position at the bottom of the viewport', () => {
+    expect(tidy('a\x1b[999;1Hb', { height: 3 })).toBe('a\n\nb');
+    expect(tidy('a\x1b[999Bb', { height: 3 })).toBe('a\n\n b');
+  });
+
+  it('caps huge cursor moves instead of allocating them', () => {
+    expect(tidy('x\x1b[99999999By').split('\n')).toHaveLength(100);
+    expect(tidy('\x1b[99999999Cx')).toHaveLength(10_001);
+    expect(tidy('\x1b[99999999Gx')).toHaveLength(10_001);
+    expect(tidy('\x1b[1;99999999Hx')).toHaveLength(10_001);
+  });
+
+  it('measures the bottom from the viewport after output has scrolled', () => {
+    expect(tidy('a\nb\nc\x1b[9Bx', { height: 2 })).toBe('a\nb\ncx');
+    expect(tidy('a\nb\nc\x1b[9;1Hx', { height: 2 })).toBe('a\nb\nx');
+  });
+
+  it('measures the bottom from the new screen after a clear', () => {
+    expect(tidy('old\n' + CLEAR + '\x1b[999;1Hx', { height: 3 })).toBe('old\n\n\nx');
+  });
+
+  it('still scrolls on a line feed at the bottom', () => {
+    expect(tidy('a\x1b[999Bb\nc', { height: 3 })).toBe('a\n\n b\nc');
+  });
+
+  it('moves exactly to the bottom row without clamping', () => {
+    expect(tidy('a\x1b[3;1Hb', { height: 3 })).toBe('a\n\nb');
+    expect(tidy('a\x1b[2Bb', { height: 3 })).toBe('a\n\n b');
+  });
+
+  it('caps the column at exactly 10,000', () => {
+    expect(tidy('\x1b[10000Cx')).toHaveLength(10_001);
+    expect(tidy('\x1b[10001Cx')).toHaveLength(10_001);
+    expect(tidy('\x1b[10001Gx')).toHaveLength(10_001);
+  });
+
+  it('lets text continue past the column cap', () => {
+    expect(tidy('\x1b[99999999Cxyz')).toBe(' '.repeat(10_000) + 'xyz');
+  });
+
+  it('never moves the cursor back on a forward move past the cap', () => {
+    expect(tidy('\x1b[99999999Cxyz\x1b[Cw')).toBe(' '.repeat(10_000) + 'xyzw');
+  });
+
+  it('caps a forward move that starts near the limit', () => {
+    expect(tidy('\x1b[9999Cab\x1b[99Dc\x1b[999Cd')).toHaveLength(10_001);
+  });
+
   it('rejects a height that is not a positive integer', () => {
     for (const height of [0, -1, 1.5, NaN]) {
       expect(() => tidy('x', { height })).toThrow(RangeError);

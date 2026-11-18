@@ -1,4 +1,6 @@
 const DEFAULT_HEIGHT = 100;
+// Not a terminal width, just a guard so input like ESC[99999999C can't allocate huge lines.
+const MAX_COL = 10_000;
 
 export type ScreenOptions = {
   /** What `ESC[2J` does to earlier output: keep it above the new screen (default) or drop it. */
@@ -61,12 +63,12 @@ export class Screen {
   }
 
   cursorDown(n: number): void {
-    this.row += n;
+    this.row = Math.min(this.row + n, this.bottomRow());
     this.ensureRows();
   }
 
   cursorForward(n: number): void {
-    this.col += n;
+    this.col = Math.max(this.col, Math.min(this.col + n, MAX_COL));
   }
 
   cursorBack(n: number): void {
@@ -75,13 +77,13 @@ export class Screen {
 
   /** 0-based column. */
   cursorToColumn(col: number): void {
-    this.col = col;
+    this.col = Math.min(col, MAX_COL);
   }
 
   /** 0-based row and column, relative to the top of the viewport. */
   cursorTo(row: number, col: number): void {
-    this.row = this.viewportTop + row;
-    this.col = col;
+    this.row = Math.min(this.viewportTop + row, this.bottomRow());
+    this.col = Math.min(col, MAX_COL);
     this.ensureRows();
   }
 
@@ -150,6 +152,11 @@ export class Screen {
     }
     this.row = this.viewportTop + offset;
     this.ensureRows();
+  }
+
+  // Cursor movement stops here, like a real terminal; only a line feed scrolls past it.
+  private bottomRow(): number {
+    return this.viewportTop + this.height - 1;
   }
 
   private ensureRows(): void {

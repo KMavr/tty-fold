@@ -82,7 +82,7 @@ child.stdout.pipe(createTidyStream()).pipe(process.stdout);
 - **Styling:** colours (16, 256 and truecolor), bold and other SGR attributes.
 - **OSC sequences:** hyperlinks and window titles, ended by either BEL or ST.
 - **Line rewrites:** carriage return, backspace, erase in line (`ESC[K`, modes 0–2).
-- **Cursor movement:** up, down, forward, back, to a column (`ESC[G`) and to a position (`ESC[H`).
+- **Cursor movement:** up, down, forward, back, to a column (`ESC[G`) and to a position (`ESC[H`). Like a real terminal, the cursor stops at the bottom of the screen (`height` rows). Columns are capped at 10,000.
 - **Erase in display:** `ESC[J`, modes 0–2. Mode 3 (clear scrollback) is ignored.
 - **Private sequences** such as `ESC[?25l` (hide cursor) and `ESC[?2026h` (synchronized output) are removed.
 
