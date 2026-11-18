@@ -153,8 +153,8 @@ export class Screen {
   }
 
   private ensureRows(): void {
-    for (let i = 0; i <= this.row; i++) {
-      this.lines[i] ??= [];
+    while (this.lines.length <= this.row) {
+      this.lines.push([]);
     }
     this.viewportTop = Math.max(this.viewportTop, this.lines.length - this.height);
   }

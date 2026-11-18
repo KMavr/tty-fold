@@ -109,6 +109,10 @@ Real captures from a pty, in [`fixtures/`](fixtures). Tokens are counted with [`
 | Retry loop, 25 equal lines | 473  | 239  | 49%   | 94%               |
 | **Total**                  | 6490 | 2636 | 59%   | 63%               |
 
+### Speed
+
+Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 15–20 MB/s (200,000 lines in under 400 ms), whether the input is plain, coloured or full of spinner redraws.
+
 Run it yourself with `pnpm bench`.
 
 ## License
