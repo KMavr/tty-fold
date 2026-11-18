@@ -53,7 +53,8 @@
     "lint": "eslint .",
     "prepare": "node -e \"if (process.env.CI) process.exit(0)\" && husky",
     "prepack": "pnpm build && pnpm lint && pnpm typecheck && pnpm test --run",
-    "bench": "pnpm build && node bench/tokens.js && node bench/speed.js"
+    "bench": "pnpm build && node bench/tokens.js && node bench/speed.js",
+    "example": "pnpm build && node examples/agent-tool.ts"
   },
   "devEngines": {
     "packageManager": {

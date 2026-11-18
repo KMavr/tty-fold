@@ -69,6 +69,29 @@ const child = spawn('pnpm', ['install'], { env: { ...process.env, FORCE_COLOR: '
 child.stdout.pipe(createTidyStream()).pipe(process.stdout);
 ```
 
+### In an agent tool
+
+Pass command output through `tidy` before returning it to the model:
+
+```ts
+import { tidy } from 'tty-fold';
+
+async function runCommand(command: string): Promise<string> {
+  const output = await runInPty(command); // your harness's way of running commands
+  return tidy(output, { collapseRepeats: true });
+}
+```
+
+You need this when the output still has terminal codes in it:
+
+- **Commands run in a pseudo-terminal.** Many agent harnesses do this so tools behave as they would for a person, which brings colours, spinners and progress bars with them.
+- **Captured logs.** CI logs, such as a failed GitHub Actions job, keep their colour codes and progress output.
+- **Forced colour.** `FORCE_COLOR`, `--color` or tools that ignore `NO_COLOR`.
+
+If your commands run without a TTY and print plain text, there is little to save.
+
+[`examples/agent-tool.ts`](examples/agent-tool.ts) is a runnable version that prints what the model would read with and without `tidy`. Run `pnpm example`, or pass any command: `pnpm example "pnpm install"`.
+
 ## Options
 
 | Option            | Default  | Description                                                                                                                                                                                                        |
