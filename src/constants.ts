@@ -1,0 +1,16 @@
+export const ESC = '\x1b';
+export const BEL = '\x07';
+export const CR = '\r';
+export const LF = '\n';
+export const BS = '\b';
+export const CUU = 'A';
+export const CUD = 'B';
+export const CUF = 'C';
+export const CUB = 'D';
+export const CHA = 'G';
+export const CUP = 'H';
+export const ED = 'J';
+export const EL = 'K';
+export const CSI_START = '[';
+export const OSC_START = ']';
+export const ST_FINAL = '\\';

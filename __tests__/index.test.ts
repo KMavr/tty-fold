@@ -210,3 +210,14 @@ describe('tidy: clear screen (ED 2)', () => {
     expect(tidy('run 1\n' + CLEAR + 'run 2\n', { clearScreen: 'drop' })).toBe('run 2\n');
   });
 });
+
+describe('tidy: private sequences', () => {
+  it('ignores cursor movement with a private marker', () => {
+    expect(tidy('a\nb\x1b[?5AX')).toBe('a\nbX');
+  });
+
+  it('ignores erase with a private marker', () => {
+    expect(tidy('abc\x1b[?2Kx')).toBe('abcx');
+    expect(tidy('one\ntwo\x1b[?2Jx')).toBe('one\ntwox');
+  });
+});
