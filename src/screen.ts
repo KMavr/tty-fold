@@ -19,7 +19,11 @@ function lineRender(line: string[]): string {
   while (end > 0 && line[end - 1] === undefined) {
     end--;
   }
-  return Array.from(line.slice(0, end), (c) => c ?? ' ').join('');
+  let out = '';
+  for (let i = 0; i < end; i++) {
+    out += line[i] ?? ' ';
+  }
+  return out;
 }
 
 export class Screen {

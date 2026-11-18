@@ -18,7 +18,13 @@ import {
 } from './constants.js';
 import type { Screen } from './screen.js';
 
-const PRIVATE_MARKER = /^[<=>?]/;
+const HANDLED_FINALS = EL + ED + CUP + CUU + CUD + CUF + CUB + CHA;
+
+// Private sequences start with one of `<=>?` (0x3c–0x3f), e.g. ESC[?25l.
+function isPrivate(params: string): boolean {
+  const code = params.charCodeAt(0);
+  return code >= 0x3c && code <= 0x3f;
+}
 
 type State = 'text' | 'esc' | 'csi' | 'osc' | 'oscEsc';
 
@@ -93,7 +99,8 @@ export class Parser {
       this.params += char;
       return 'csi';
     }
-    if (!PRIVATE_MARKER.test(this.params)) {
+    // Most CSI sequences are styling (SGR, `m`), so skip param parsing for anything not handled.
+    if (HANDLED_FINALS.includes(char) && !isPrivate(this.params)) {
       this.runCsi(char);
     }
     return 'text';
