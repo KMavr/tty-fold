@@ -1,0 +1,23 @@
+diff --git a/src/cart.ts b/src/cart.ts
+index ab34757..ecfe844 100644
+--- a/src/cart.ts
++++ b/src/cart.ts
+@@ -1,11 +1,15 @@
+ type Item = { name: string; price: number };
+ 
+ export function total(items: Item[]): number {
+-  return items.reduce((sum, item) => sum + item.price, '');
++  return items.reduce((sum, item) => sum + item.price, 0);
+ }
+ 
+ export function label(item: Item): string {
+-  return item.title.toUpperCase();
++  return item.name.toUpperCase();
+ }
+ 
+-export const free: Item = { name: 'gift' };
++export const free: Item = { name: 'gift', price: 0 };
++
++export function count(items: Item[]): number {
++  return items.length;
++}

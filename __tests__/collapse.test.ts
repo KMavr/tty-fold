@@ -56,8 +56,8 @@ describe('tidy: collapseRepeats option', () => {
     expect(tidy(warnings, { collapseRepeats: true })).toBe('WARN deprecated foo (×3)\ndone');
   });
 
-  it('keeps the trailing newline', () => {
-    expect(tidy('w\nw\nw\n', { collapseRepeats: true })).toBe('w (×3)\n');
+  it('drops the trailing newline', () => {
+    expect(tidy('w\nw\nw\n', { collapseRepeats: true })).toBe('w (×3)');
   });
 
   it('collapses after replay, so rewritten frames are not repeats', () => {
@@ -68,7 +68,7 @@ describe('tidy: collapseRepeats option', () => {
 
   it('collapses styled lines that render identically', () => {
     const raw = '\x1b[33mwarn\x1b[39m\n\x1b[1;33mwarn\x1b[0m\nwarn\n';
-    expect(tidy(raw, { collapseRepeats: true })).toBe('warn (×3)\n');
+    expect(tidy(raw, { collapseRepeats: true })).toBe('warn (×3)');
   });
 
   it('collapses repeated frames of a deep recursion stack trace', () => {

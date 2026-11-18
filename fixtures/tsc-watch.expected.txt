@@ -1,0 +1,54 @@
+[4:17:01 PM] Starting compilation in watch mode...
+
+src/cart.ts:4:3 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+4   return items.reduce((sum, item) => sum + item.price, '');
+    ~~~~~~
+
+src/cart.ts:8:15 - error TS2339: Property 'title' does not exist on type 'Item'.
+
+8   return item.title.toUpperCase();
+                ~~~~~
+
+src/cart.ts:11:14 - error TS2741: Property 'price' is missing in type '{ name: string; }' but required in type 'Item'.
+
+11 export const free: Item = { name: 'gift' };
+                ~~~~
+
+  src/cart.ts:1:29
+    1 type Item = { name: string; price: number };
+                                  ~~~~~
+    'price' is declared here.
+
+[4:17:01 PM] Found 3 errors. Watching for file changes.
+[4:17:03 PM] File change detected. Starting incremental compilation...
+
+src/cart.ts:8:15 - error TS2339: Property 'title' does not exist on type 'Item'.
+
+8   return item.title.toUpperCase();
+                ~~~~~
+
+src/cart.ts:11:14 - error TS2741: Property 'price' is missing in type '{ name: string; }' but required in type 'Item'.
+
+11 export const free: Item = { name: 'gift' };
+                ~~~~
+
+  src/cart.ts:1:29
+    1 type Item = { name: string; price: number };
+                                  ~~~~~
+    'price' is declared here.
+
+[4:17:03 PM] Found 2 errors. Watching for file changes.
+[4:17:05 PM] File change detected. Starting incremental compilation...
+
+src/cart.ts:11:14 - error TS2741: Property 'price' is missing in type '{ name: string; }' but required in type 'Item'.
+
+11 export const free: Item = { name: 'gift' };
+                ~~~~
+
+  src/cart.ts:1:29
+    1 type Item = { name: string; price: number };
+                                  ~~~~~
+    'price' is declared here.
+
+[4:17:05 PM] Found 1 error. Watching for file changes.

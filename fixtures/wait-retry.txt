@@ -1,0 +1,27 @@
+Starting dev server...
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[33mwaiting for postgres at localhost:5432...[0m
+[31merror:[0m postgres did not start after 25 attempts

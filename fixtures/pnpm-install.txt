@@ -1,0 +1,20 @@
+
+[K[0J[1APackages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /home/user/.local/share/pnpm/store/v11[0K
+  Virtual store is at:             node_modules/.pnpm[0K
+Progress: resolved [96m53[39m, reused [96m0[39m, downloaded [96m1[39m, added [96m0[39m[0K
+[0K[K[0J[1AProgress: resolved [96m53[39m, reused [96m0[39m, downloaded [96m51[39m, added [96m50[39m
+[K[0J[1APackages: [32m+53[39m[0K
+[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m[32m+[39m
+Progress: resolved [96m53[39m, reused [96m0[39m, downloaded [96m53[39m, added [96m53[39m
+[K[0J[1AProgress: resolved [96m53[39m, reused [96m0[39m, downloaded [96m53[39m, added [96m53[39m, done
+[K[0J
+[96mdevDependencies:[39m
+[32m+[39m typescript [90m5.9.3[39m
+[32m+[39m vitest [90m3.2.4[39m
+[K[0JError: [31mERR_PNPM_IGNORED_BUILDS[0m
+
+  [31m×[0m adding a new package
+[31m  ╰─▶ [0mIgnored build scripts: esbuild@0.28.2
+[36m  help: [0mRun "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.
+

@@ -1,0 +1,23 @@
+[96msrc/cart.ts[0m:[93m4[0m:[93m3[0m - [91merror[0m[90m TS2322: [0mType 'string' is not assignable to type 'number'.
+
+[7m4[0m   return items.reduce((sum, item) => sum + item.price, '');
+[7m [0m [91m  ~~~~~~[0m
+
+[96msrc/cart.ts[0m:[93m8[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'title' does not exist on type 'Item'.
+
+[7m8[0m   return item.title.toUpperCase();
+[7m [0m [91m              ~~~~~[0m
+
+[96msrc/cart.ts[0m:[93m11[0m:[93m14[0m - [91merror[0m[90m TS2741: [0mProperty 'price' is missing in type '{ name: string; }' but required in type 'Item'.
+
+[7m11[0m export const free: Item = { name: 'gift' };
+[7m  [0m [91m             ~~~~[0m
+
+  [96msrc/cart.ts[0m:[93m1[0m:[93m29[0m
+    [7m1[0m type Item = { name: string; price: number };
+    [7m [0m [96m                            ~~~~~[0m
+    'price' is declared here.
+
+
+Found 3 errors in the same file, starting at: src/cart.ts[90m:4[0m
+

@@ -1,0 +1,10 @@
+file:///home/user/project/overflow.js:2
+  return walk(node.children[0]);
+  ^
+
+RangeError: Maximum call stack size exceeded
+    at walk (file:///home/user/project/overflow.js:2:3)
+    at walk (file:///home/user/project/overflow.js:2:10)
+    ... collapsed 38 duplicate lines matching above 1 lines 38 times...
+
+Node.js v24.8.0

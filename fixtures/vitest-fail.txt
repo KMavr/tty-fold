@@ -1,0 +1,66 @@
+[?25l
+[1m[46m RUN [49m[22m [36mv3.2.4 [39m[90m/home/user/project[39m
+
+[?2026h
+[1m[33m ❯ [39m[22msrc/cart.test.ts[2m [queued][22m
+
+[2m Test Files [22m[1m[32m0 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m[1m[32m0 passed[39m[22m[90m (0)[39m
+[2m   Start at [22m18:13:40
+[2m   Duration [22m202ms
+[?2026l[?2026h[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K
+[1m[33m ❯ [39m[22msrc/cart.test.ts[2m 0/4[22m
+
+[2m Test Files [22m[1m[32m0 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m[1m[32m0 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m18:13:40
+[2m   Duration [22m605ms
+[?2026l[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K[1A[K [31m❯[39m src/cart.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+   [32m✓[39m cart[2m > [22mapplies a discount[32m 1[2mms[22m[39m
+[31m   [31m×[31m cart[2m > [22mrounds to cents[39m[32m 7[2mms[22m[39m
+[31m     → expected 16.9915 to be 16.99 // Object.is equality[39m
+[31m   [31m×[31m cart[2m > [22mrejects discounts over 100%[39m[32m 0[2mms[22m[39m
+[31m     → discount over 100%: 150[39m
+   [32m✓[39m cart[2m > [22mkeeps the price with no discount[32m 0[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/cart.test.ts[2m > [22mcart[2m > [22mrounds to cents
+[31m[1mAssertionError[22m: expected 16.9915 to be 16.99 // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 16.99[39m
+[31m+ 16.9915[39m
+
+[36m [2m❯[22m src/cart.test.ts:[2m13:38[22m[39m
+    [90m 11| [39m  })[33m;[39m
+    [90m 12| [39m  [34mit[39m([32m'rounds to cents'[39m[33m,[39m () [33m=>[39m {
+    [90m 13| [39m    [34mexpect[39m([34mapplyDiscount[39m([34m19.99[39m[33m,[39m [34m15[39m))[33m.[39m[34mtoBe[39m([34m16.99[39m)[33m;[39m
+    [90m   | [39m                                     [31m^[39m
+    [90m 14| [39m  })[33m;[39m
+    [90m 15| [39m  [34mit[39m([32m'rejects discounts over 100%'[39m[33m,[39m () [33m=>[39m {
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/cart.test.ts[2m > [22mcart[2m > [22mrejects discounts over 100%
+[31m[1mRangeError[22m: discount over 100%: 150[39m
+[36m [2m❯[22m applyDiscount src/cart.test.ts:[2m4:24[22m[39m
+    [90m  2| [39m
+    [90m  3| [39m[35mfunction[39m [34mapplyDiscount[39m(price[33m:[39m number[33m,[39m pct[33m:[39m number)[33m:[39m number {
+    [90m  4| [39m  [35mif[39m (pct [33m>[39m [34m100[39m) [35mthrow[39m [35mnew[39m [33mRangeError[39m([32m`discount over 100%: [39m[36m${[39mpct[36m}[39m[32m`[39m)[33m;[39m
+    [90m   | [39m                       [31m^[39m
+    [90m  5| [39m  [35mreturn[39m price [33m-[39m price [33m*[39m (pct [33m/[39m [34m100[39m)[33m;[39m
+    [90m  6| [39m}
+[90m [2m❯[22m src/cart.test.ts:[2m16:12[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (4)[39m
+[2m   Start at [22m 18:13:40
+[2m   Duration [22m 711ms[2m (transform 470ms, setup 0ms, collect 468ms, tests 9ms, environment 0ms, prepare 43ms)[22m
+
+[?25h⠙[1G[0K

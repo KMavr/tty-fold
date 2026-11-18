@@ -84,7 +84,7 @@ describe('createTidyStream', () => {
 
     stream.end();
     await finished(stream);
-    expect(out.join('')).toBe('w (×3)\ndone\n');
+    expect(out.join('')).toBe('w (×3)\ndone');
   });
 
   it('rejects an invalid height', () => {

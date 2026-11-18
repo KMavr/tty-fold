@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { tidy } from '../src/index.js';
 import { Parser } from '../src/parser.js';
 import { Screen } from '../src/screen.js';
 
@@ -43,7 +42,7 @@ describe('Parser: state survives across chunks', () => {
       '\x1b[32mok\x1b[39m build\n\x1b[32mok\x1b[39m test\n' +
       '\x1b[?25h\x1b]0;done\x07' +
       '\x1b[H\x1b[2J\x1b[3Jsecond run\r\n';
-    expect(feedAll(raw.split(''))).toBe(tidy(raw));
+    expect(feedAll(raw.split(''))).toBe(feedAll([raw]));
   });
 });
 

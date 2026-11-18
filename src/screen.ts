@@ -11,10 +11,13 @@ function isBlank(line: string[]): boolean {
   return line.join('').trim() === '';
 }
 
+// Holes (cells never written, or erased) at the end are dropped; printed spaces are kept.
 function lineRender(line: string[]): string {
-  return Array.from(line, (c) => c ?? ' ')
-    .join('')
-    .trimEnd();
+  let end = line.length;
+  while (end > 0 && line[end - 1] === undefined) {
+    end--;
+  }
+  return Array.from(line.slice(0, end), (c) => c ?? ' ').join('');
 }
 
 export class Screen {
@@ -89,7 +92,7 @@ export class Screen {
         break;
       case 1:
         for (let i = 0; i <= this.col; i++) {
-          this.lines[this.row][i] = ' ';
+          delete this.lines[this.row][i];
         }
         break;
       case 2:

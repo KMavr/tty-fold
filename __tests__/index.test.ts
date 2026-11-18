@@ -65,7 +65,7 @@ describe('tidy: single-line rewrites', () => {
   });
 
   it('treats CRLF as a plain newline', () => {
-    expect(tidy('a\r\nb\r\n')).toBe('a\nb\n');
+    expect(tidy('a\r\nb\r\nc')).toBe('a\nb\nc');
   });
 
   it('ignores a trailing carriage return', () => {
@@ -108,8 +108,26 @@ describe('tidy: single-line rewrites', () => {
     expect(tidy('a\b\b\bX')).toBe('X');
   });
 
-  it('trims trailing spaces but keeps leading and inner ones', () => {
-    expect(tidy('done   \n  a  b  ')).toBe('done\n  a  b');
+  it('keeps printed spaces, including trailing ones', () => {
+    expect(tidy('done   \n  a  b  ')).toBe('done   \n  a  b  ');
+  });
+
+  it('keeps a diff context line that is a single space', () => {
+    expect(tidy('@@ -1,3 +1,3 @@\n a\n \x1b[m\n-b\n+c')).toBe('@@ -1,3 +1,3 @@\n a\n \n-b\n+c');
+  });
+
+  it('drops trailing holes left by cursor movement', () => {
+    expect(tidy('a\x1b[5C')).toBe('a');
+    expect(tidy('a\x1b[5CX')).toBe('a     X');
+  });
+
+  it('treats cells erased by EL 1 as holes, not spaces', () => {
+    expect(tidy('abc\x1b[1K')).toBe('');
+  });
+
+  it('drops trailing blank lines', () => {
+    expect(tidy('a\n\n\n')).toBe('a');
+    expect(tidy('\n\n')).toBe('');
   });
 });
 
@@ -164,7 +182,7 @@ describe('tidy: cursor movement', () => {
       eraseThreeLines +
       '\x1b[32m✓\x1b[39m build\n\x1b[32m✓\x1b[39m test\n' +
       '\x1b[?25h';
-    expect(tidy(raw)).toBe('✓ build\n✓ test\n');
+    expect(tidy(raw)).toBe('✓ build\n✓ test');
   });
 
   it('cursor position (CUP) is 1-based row;col and defaults to the top-left', () => {
@@ -179,7 +197,7 @@ describe('tidy: cursor movement', () => {
 
   it('keeps output above a multi-line redraw untouched', () => {
     const raw = '$ pnpm build\n' + 'a: 10%\nb: 10%\n' + '\x1b[2A\r\x1b[J' + 'a: done\nb: done\n';
-    expect(tidy(raw)).toBe('$ pnpm build\na: done\nb: done\n');
+    expect(tidy(raw)).toBe('$ pnpm build\na: done\nb: done');
   });
 });
 
@@ -187,11 +205,17 @@ describe('tidy: clear screen (ED 2)', () => {
   const CLEAR = '\x1b[H\x1b[2J\x1b[3J';
 
   it('keeps earlier output by default and starts a fresh screen below it', () => {
-    expect(tidy('run 1\n' + CLEAR + 'run 2\n')).toBe('run 1\nrun 2\n');
+    expect(tidy('run 1\n' + CLEAR + 'run 2\n')).toBe('run 1\nrun 2');
   });
 
   it('never lets the new screen overwrite the old one', () => {
-    expect(tidy('aaaa\nbbbb\n' + CLEAR + 'x\n')).toBe('aaaa\nbbbb\nx\n');
+    expect(tidy('aaaa\nbbbb\n' + CLEAR + 'x\n')).toBe('aaaa\nbbbb\nx');
+  });
+
+  it('leaves no blank rows behind when the new screen is shorter', () => {
+    // ED 2 does not move the cursor, so it sits rows down into the new screen until ESC[H.
+    const raw = 'a\nb\nc\nd\n' + '\x1b[2J\x1b[H' + 'x\n';
+    expect(tidy(raw)).toBe('a\nb\nc\nd\nx');
   });
 
   it('does not add blank rows when clearing an empty screen', () => {
@@ -207,7 +231,7 @@ describe('tidy: clear screen (ED 2)', () => {
   });
 
   it('drops earlier output with clearScreen: drop', () => {
-    expect(tidy('run 1\n' + CLEAR + 'run 2\n', { clearScreen: 'drop' })).toBe('run 2\n');
+    expect(tidy('run 1\n' + CLEAR + 'run 2\n', { clearScreen: 'drop' })).toBe('run 2');
   });
 });
 

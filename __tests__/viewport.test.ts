@@ -56,15 +56,15 @@ describe('Screen.takeFinalLines', () => {
     expect(screen.takeFinalLines()).toEqual([]);
   });
 
-  it('returns rendered lines (styling stripped, trailing spaces trimmed)', () => {
-    expect(feed('\x1b[31mx\x1b[0m   \ny\nz', 1).takeFinalLines()).toEqual(['x', 'y']);
+  it('returns rendered lines (styling stripped, trailing holes dropped)', () => {
+    expect(feed('\x1b[31mx\x1b[0m\x1b[3C\ny\nz', 1).takeFinalLines()).toEqual(['x', 'y']);
   });
 
   it('leaves the rest for render()', () => {
     const input = 'a\nb\nc\n';
     const screen = feed(input, 2);
     const taken = screen.takeFinalLines();
+    expect(taken).toEqual(['a', 'b']);
     expect(screen.render()).toBe('c\n');
-    expect([...taken, screen.render()].join('\n')).toBe(tidy(input, { height: 2 }));
   });
 });

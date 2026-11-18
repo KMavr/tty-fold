@@ -1,0 +1,50 @@
+
+ RUN  v3.2.4 /home/user/project
+
+ ❯ src/cart.test.ts (4 tests | 2 failed) 9ms
+   ✓ cart > applies a discount 1ms
+   × cart > rounds to cents 7ms
+     → expected 16.9915 to be 16.99 // Object.is equality
+   × cart > rejects discounts over 100% 0ms
+     → discount over 100%: 150
+   ✓ cart > keeps the price with no discount 0ms
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/cart.test.ts > cart > rounds to cents
+AssertionError: expected 16.9915 to be 16.99 // Object.is equality
+
+- Expected
++ Received
+
+- 16.99
++ 16.9915
+
+ ❯ src/cart.test.ts:13:38
+     11|   });
+     12|   it('rounds to cents', () => {
+     13|     expect(applyDiscount(19.99, 15)).toBe(16.99);
+       |                                      ^
+     14|   });
+     15|   it('rejects discounts over 100%', () => {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/cart.test.ts > cart > rejects discounts over 100%
+RangeError: discount over 100%: 150
+ ❯ applyDiscount src/cart.test.ts:4:24
+      2| 
+      3| function applyDiscount(price: number, pct: number): number {
+      4|   if (pct > 100) throw new RangeError(`discount over 100%: ${pct}`);
+       |                        ^
+      5|   return price - price * (pct / 100);
+      6| }
+ ❯ src/cart.test.ts:16:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 2 passed (4)
+   Start at  18:13:40
+   Duration  711ms (transform 470ms, setup 0ms, collect 468ms, tests 9ms, environment 0ms, prepare 43ms)

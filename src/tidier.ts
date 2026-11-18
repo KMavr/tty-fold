@@ -26,6 +26,10 @@ export class Tidier {
 
   end(): string {
     const lines = [...this.screen.takeFinalLines(), ...this.screen.renderLines()];
+    // Rows the cursor reached but nothing filled, e.g. left over after a clear screen.
+    while (lines.at(-1) === '') {
+      lines.pop();
+    }
     if (!this.collapser) {
       return lines.join('\n');
     }
