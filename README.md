@@ -111,7 +111,7 @@ Real captures from a pty, in [`fixtures/`](fixtures). Tokens are counted with [`
 
 ### Speed
 
-Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 13–20 MB/s (200,000 lines in about 400 ms), whether the input is plain, coloured or full of spinner redraws.
+Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 20–23 MB/s (200,000 lines in under 350 ms), whether the input is plain, coloured or full of spinner redraws.
 
 Run it yourself with `pnpm bench`.
 
