@@ -1,21 +1,37 @@
+const DEFAULT_HEIGHT = 100;
+
 export type ScreenOptions = {
   /** What `ESC[2J` does to earlier output: keep it above the new screen (default) or drop it. */
   clearScreen?: 'keep' | 'drop';
+  /** Rows the cursor can reach; output above them is final. Default 100. */
+  height?: number;
 };
 
 function isBlank(line: string[]): boolean {
   return line.join('').trim() === '';
 }
 
+function lineRender(line: string[]): string {
+  return Array.from(line, (c) => c ?? ' ')
+    .join('')
+    .trimEnd();
+}
+
 export class Screen {
   private lines: string[][] = [[]];
   private row = 0;
   private col = 0;
-  private top = 0;
+  private viewportTop = 0;
   private readonly clearMode: 'keep' | 'drop';
+  private readonly height: number;
 
   constructor(options: ScreenOptions = {}) {
     this.clearMode = options.clearScreen ?? 'keep';
+    const height = options.height ?? DEFAULT_HEIGHT;
+    if (height < 1 || !Number.isInteger(height)) {
+      throw RangeError(`height must be a positive integer, got ${height}`);
+    }
+    this.height = height;
   }
 
   write(char: string): void {
@@ -38,7 +54,7 @@ export class Screen {
   }
 
   cursorUp(n: number): void {
-    this.row = Math.max(this.top, this.row - n);
+    this.row = Math.max(this.viewportTop, this.row - n);
   }
 
   cursorDown(n: number): void {
@@ -59,9 +75,9 @@ export class Screen {
     this.col = col;
   }
 
-  /** 0-based row and column, relative to the top of the current screen. */
+  /** 0-based row and column, relative to the top of the viewport. */
   cursorTo(row: number, col: number): void {
-    this.row = this.top + row;
+    this.row = this.viewportTop + row;
     this.col = col;
     this.ensureRows();
   }
@@ -89,7 +105,7 @@ export class Screen {
         this.lines.length = this.row + 1;
         break;
       case 1:
-        for (let i = this.top; i < this.row; i++) {
+        for (let i = this.viewportTop; i < this.row; i++) {
           this.lines[i] = [];
         }
         this.eraseInLine(1);
@@ -100,36 +116,36 @@ export class Screen {
     }
   }
 
+  takeFinalLines(): string[] {
+    const count = this.viewportTop;
+    if (count === 0) {
+      return [];
+    }
+    const removed = this.lines.splice(0, count);
+    this.row -= count;
+    this.viewportTop = 0;
+    return removed.map(lineRender);
+  }
+
   render(): string {
-    return this.lines
-      .map((line) =>
-        Array.from(line, (c) => c ?? ' ')
-          .join('')
-          .trimEnd(),
-      )
-      .join('\n');
+    return this.renderLines().join('\n');
   }
 
   renderLines(): string[] {
-    return this.lines.map((line) =>
-      Array.from(line, (c) => c ?? ' ')
-        .join('')
-        .trimEnd(),
-    );
+    return this.lines.map(lineRender);
   }
 
   private clear(): void {
-    const offset = this.row - this.top;
+    const offset = this.row - this.viewportTop;
     if (this.clearMode === 'drop') {
-      this.lines = [];
-      this.top = 0;
+      this.lines.length = this.viewportTop;
     } else {
-      while (this.lines.length > 0 && isBlank(this.lines[this.lines.length - 1])) {
+      while (this.lines.length > this.viewportTop && isBlank(this.lines[this.lines.length - 1])) {
         this.lines.pop();
       }
-      this.top = this.lines.length;
+      this.viewportTop = Math.max(this.viewportTop, this.lines.length);
     }
-    this.row = this.top + offset;
+    this.row = this.viewportTop + offset;
     this.ensureRows();
   }
 
@@ -137,5 +153,6 @@ export class Screen {
     for (let i = 0; i <= this.row; i++) {
       this.lines[i] ??= [];
     }
+    this.viewportTop = Math.max(this.viewportTop, this.lines.length - this.height);
   }
 }

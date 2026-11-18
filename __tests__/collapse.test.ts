@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { collapseRepeats } from '../src/collapse.js';
+import { collapseRepeats, RepeatCollapser } from '../src/collapse.js';
 import { tidy } from '../src/index.js';
 
 describe('collapseRepeats', () => {
@@ -79,5 +79,46 @@ describe('tidy: collapseRepeats option', () => {
     expect(tidy(raw, { collapseRepeats: true })).toBe(
       'RangeError: Maximum call stack size exceeded\n' + frame + ' (×50)',
     );
+  });
+});
+
+describe('RepeatCollapser (streaming)', () => {
+  it('holds a line until the next one shows it is not a run', () => {
+    const c = new RepeatCollapser();
+    expect(c.push('a')).toEqual([]);
+    expect(c.push('b')).toEqual(['a']);
+    expect(c.flush()).toEqual(['b']);
+  });
+
+  it('emits a collapsed run when a different line arrives', () => {
+    const c = new RepeatCollapser();
+    for (let i = 0; i < 4; i++) {
+      expect(c.push('x')).toEqual([]);
+    }
+    expect(c.push('y')).toEqual(['x (×4)']);
+    expect(c.flush()).toEqual(['y']);
+  });
+
+  it('emits short runs unchanged', () => {
+    const c = new RepeatCollapser();
+    c.push('x');
+    c.push('x');
+    expect(c.push('y')).toEqual(['x', 'x']);
+  });
+
+  it('passes blank runs through unchanged', () => {
+    const c = new RepeatCollapser();
+    c.push('');
+    c.push('');
+    c.push('');
+    expect(c.push('a')).toEqual(['', '', '']);
+  });
+
+  it('flushes nothing when empty, and nothing twice', () => {
+    const c = new RepeatCollapser();
+    expect(c.flush()).toEqual([]);
+    c.push('a');
+    expect(c.flush()).toEqual(['a']);
+    expect(c.flush()).toEqual([]);
   });
 });
