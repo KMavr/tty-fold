@@ -3,6 +3,7 @@
 //   pnpm example                         replays a real `pnpm add` capture
 //   pnpm example "pnpm install"          runs any command in a pseudo-terminal
 import { spawn } from 'node:child_process';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { countTokens } from 'gpt-tokenizer';
 import { tidy } from '../dist/index.js';
 
@@ -40,6 +41,8 @@ const tidyTokens = countTokens(tidied);
 
 console.log(`\n── Without tty-fold: the model reads (${rawTokens} tokens) ──\n`);
 console.log(visible(raw));
+// Set by assets/demo.tape so the GIF shows the two outputs one after the other.
+await sleep(Number(process.env.DEMO_PAUSE_MS) || 0);
 console.log(`\n── With tty-fold: the model reads (${tidyTokens} tokens) ──\n`);
 console.log(tidied);
 console.log(`\n${Math.round((1 - tidyTokens / rawTokens) * 100)}% fewer tokens for: ${command}`);

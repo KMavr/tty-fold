@@ -16,6 +16,8 @@ Captured terminal output is full of things nobody reads: colour codes, spinner f
 - **Exact.** Stack traces and diffs come through character for character. Nothing is guessed, summarised or truncated.
 - **Streaming.** A Node `Transform` stream that gives the same output as the one-shot function, however the input is split up.
 
+![tty-fold demo](https://raw.githubusercontent.com/KMavr/tty-fold/main/assets/demo.gif)
+
 `pnpm add` in a terminal, 988 tokens raw:
 
 ```
