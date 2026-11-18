@@ -71,11 +71,11 @@ child.stdout.pipe(createTidyStream()).pipe(process.stdout);
 
 ## Options
 
-| Option            | Default  | Description                                                                                                                                                                                |
-| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `collapseRepeats` | `false`  | Collapse 3 or more identical consecutive lines into one line followed by `(×N)`. Only exact repeats, never blank lines. Off by default so diffs and other exact output stay as they are.   |
-| `clearScreen`     | `'keep'` | What a clear screen (`ESC[2J`) does to earlier output. `'keep'` keeps it and starts the new screen below, which preserves every run of a watch mode. `'drop'` discards what was on screen. |
-| `height`          | `100`    | Rows the cursor can move back up into. Output above that is final. This keeps memory bounded and lets the stream emit lines early. Must be a positive integer.                             |
+| Option            | Default  | Description                                                                                                                                                                                                        |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `collapseRepeats` | `false`  | Collapse 3 or more identical consecutive lines into one line followed by `(×N)`. Only exact repeats, never blank lines. Off by default so diffs and other exact output stay as they are.                           |
+| `clearScreen`     | `'keep'` | What a clear screen (`ESC[2J`) does to earlier output. `'keep'` keeps it and starts the new screen below, which preserves every run of a watch mode. `'drop'` discards what was on screen.                         |
+| `height`          | `100`    | Rows the cursor can move back up into. Output above that is final. Final rows are stored as plain text, so memory stays close to the output size, and the stream can emit lines early. Must be a positive integer. |
 
 ## What it handles
 
@@ -111,7 +111,7 @@ Real captures from a pty, in [`fixtures/`](fixtures). Tokens are counted with [`
 
 ### Speed
 
-Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 15–20 MB/s (200,000 lines in under 400 ms), whether the input is plain, coloured or full of spinner redraws.
+Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processes about 13–20 MB/s (200,000 lines in about 400 ms), whether the input is plain, coloured or full of spinner redraws.
 
 Run it yourself with `pnpm bench`.
 

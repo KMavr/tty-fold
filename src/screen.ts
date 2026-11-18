@@ -27,6 +27,7 @@ export class Screen {
   private row = 0;
   private col = 0;
   private viewportTop = 0;
+  private final: string[] = [];
   private readonly clearMode: 'keep' | 'drop';
   private readonly height: number;
 
@@ -122,14 +123,9 @@ export class Screen {
   }
 
   takeFinalLines(): string[] {
-    const count = this.viewportTop;
-    if (count === 0) {
-      return [];
-    }
-    const removed = this.lines.splice(0, count);
-    this.row -= count;
-    this.viewportTop = 0;
-    return removed.map(lineRender);
+    const final = this.final;
+    this.final = [];
+    return final;
   }
 
   render(): string {
@@ -164,5 +160,13 @@ export class Screen {
       this.lines.push([]);
     }
     this.viewportTop = Math.max(this.viewportTop, this.lines.length - this.height);
+    if (this.viewportTop > 0) {
+      const rows = this.lines.splice(0, this.viewportTop);
+      rows.forEach((row) => {
+        this.final.push(lineRender(row));
+      });
+      this.row -= rows.length;
+      this.viewportTop = 0;
+    }
   }
 }

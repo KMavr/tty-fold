@@ -108,6 +108,20 @@ describe('Screen.takeFinalLines', () => {
     expect(feed('\x1b[31mx\x1b[0m\x1b[3C\ny\nz', 1).takeFinalLines()).toEqual(['x', 'y']);
   });
 
+  it('keeps at most height rows on screen during a single large feed', () => {
+    const screen = feed('line\n'.repeat(200_000), 100);
+    expect(screen['lines'].length).toBeLessThanOrEqual(100);
+    const taken = screen.takeFinalLines();
+    expect(taken).toHaveLength(199_901);
+    expect(taken.every((line) => line === 'line')).toBe(true);
+  });
+
+  it('moves the old screen to final lines on a clear with keep', () => {
+    const screen = feed('a\nb' + CLEAR + 'x', 5);
+    expect(screen.takeFinalLines()).toEqual(['a', 'b']);
+    expect(screen.render()).toBe('x');
+  });
+
   it('leaves the rest for render()', () => {
     const input = 'a\nb\nc\n';
     const screen = feed(input, 2);
