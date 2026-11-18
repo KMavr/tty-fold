@@ -30,7 +30,6 @@ export class Screen {
   private lines: string[][] = [[]];
   private row = 0;
   private col = 0;
-  private viewportTop = 0;
   private final: string[] = [];
   private readonly clearMode: 'keep' | 'drop';
   private readonly height: number;
@@ -64,7 +63,7 @@ export class Screen {
   }
 
   cursorUp(n: number): void {
-    this.row = Math.max(this.viewportTop, this.row - n);
+    this.row = Math.max(0, this.row - n);
   }
 
   cursorDown(n: number): void {
@@ -87,7 +86,7 @@ export class Screen {
 
   /** 0-based row and column, relative to the top of the viewport. */
   cursorTo(row: number, col: number): void {
-    this.row = Math.min(this.viewportTop + row, this.bottomRow());
+    this.row = Math.min(row, this.bottomRow());
     this.col = Math.min(col, MAX_COL);
     this.ensureRows();
   }
@@ -115,7 +114,7 @@ export class Screen {
         this.lines.length = this.row + 1;
         break;
       case 1:
-        for (let i = this.viewportTop; i < this.row; i++) {
+        for (let i = 0; i < this.row; i++) {
           this.lines[i] = [];
         }
         this.eraseInLine(1);
@@ -140,37 +139,35 @@ export class Screen {
     return this.lines.map(lineRender);
   }
 
+  // The cursor keeps its row; the new screen starts empty below (keep) or in place of (drop) the old one.
   private clear(): void {
-    const offset = this.row - this.viewportTop;
-    if (this.clearMode === 'drop') {
-      this.lines.length = this.viewportTop;
-    } else {
-      while (this.lines.length > this.viewportTop && isBlank(this.lines[this.lines.length - 1])) {
+    if (this.clearMode === 'keep') {
+      while (this.lines.length > 0 && isBlank(this.lines[this.lines.length - 1])) {
         this.lines.pop();
       }
-      this.viewportTop = Math.max(this.viewportTop, this.lines.length);
+      for (const line of this.lines) {
+        this.final.push(lineRender(line));
+      }
     }
-    this.row = this.viewportTop + offset;
+    this.lines = [];
     this.ensureRows();
   }
 
   // Cursor movement stops here, like a real terminal; only a line feed scrolls past it.
   private bottomRow(): number {
-    return this.viewportTop + this.height - 1;
+    return this.height - 1;
   }
 
   private ensureRows(): void {
     while (this.lines.length <= this.row) {
       this.lines.push([]);
     }
-    this.viewportTop = Math.max(this.viewportTop, this.lines.length - this.height);
-    if (this.viewportTop > 0) {
-      const rows = this.lines.splice(0, this.viewportTop);
-      rows.forEach((row) => {
-        this.final.push(lineRender(row));
-      });
-      this.row -= rows.length;
-      this.viewportTop = 0;
+    const excess = this.lines.length - this.height;
+    if (excess > 0) {
+      for (const line of this.lines.splice(0, excess)) {
+        this.final.push(lineRender(line));
+      }
+      this.row -= excess;
     }
   }
 }
