@@ -110,6 +110,14 @@ export class Screen {
       .join('\n');
   }
 
+  renderLines(): string[] {
+    return this.lines.map((line) =>
+      Array.from(line, (c) => c ?? ' ')
+        .join('')
+        .trimEnd(),
+    );
+  }
+
   private clear(): void {
     const offset = this.row - this.top;
     if (this.clearMode === 'drop') {
