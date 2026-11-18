@@ -52,7 +52,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "prepare": "node -e \"if (process.env.CI) process.exit(0)\" && husky",
-    "prepack": "pnpm build && pnpm lint && pnpm typecheck && pnpm test --run"
+    "prepack": "pnpm build && pnpm lint && pnpm typecheck && pnpm test --run",
+    "bench": "pnpm build && node bench/tokens.js"
   },
   "devEngines": {
     "packageManager": {
@@ -79,6 +80,7 @@
     "eslint": "^10.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.7",
+    "gpt-tokenizer": "^4.1.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.1",
     "prettier": "^3.10.1",
