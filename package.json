@@ -12,7 +12,15 @@
     "progress",
     "logs",
     "ci",
-    "llm"
+    "llm",
+    "agent",
+    "ai-agents",
+    "mcp",
+    "tokens",
+    "terminal-emulator",
+    "xterm",
+    "carriage-return",
+    "progress-bar"
   ],
   "author": "Konstantinos Mavrikas <mavrikas.konstantinos@gmail.com>",
   "license": "MIT",
