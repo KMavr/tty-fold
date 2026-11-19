@@ -1,0 +1,27 @@
+
+[+] Building 7.4s (11/11) FINISHED                                             docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                           0.0s
+ => => transferring dockerfile: 241B                                                           0.0s
+ => [internal] load metadata for docker.io/library/alpine:3.19.4                               2.3s
+ => [internal] load .dockerignore                                                              0.0s
+ => => transferring context: 2B                                                                0.0s
+ => [1/6] FROM docker.io/library/alpine:3.19.4@sha256:7a85bf5dc56c949be827f84f9185161265c58f5  0.6s
+ => => resolve docker.io/library/alpine:3.19.4@sha256:7a85bf5dc56c949be827f84f9185161265c58f5  0.0s
+ => => sha256:7a85bf5dc56c949be827f84f9185161265c58f589bb8b2a6b6bb6d3076c1be2 8.08kB / 8.08kB  0.0s
+ => => sha256:b67a97b3aa97ecd03bfbc01ec440094e61bf17057db014b2e710ec553900f38 1.02kB / 1.02kB  0.0s
+ => => sha256:92a15abee10cc313a38eee9907c69efba386de07d03b8c393d03aba931038627 616B / 616B     0.0s
+ => => sha256:6c9d4d66fb4987fcd48c673e8b29bb504a3cfb33f10b97cbcea126aa3b8b59f 3.36MB / 3.36MB  0.4s
+ => => extracting sha256:6c9d4d66fb4987fcd48c673e8b29bb504a3cfb33f10b97cbcea126aa3b8b59fd      0.1s
+ => [internal] load build context                                                              0.0s
+ => => transferring context: 57B                                                               0.0s
+ => [2/6] RUN apk add --no-cache curl git jq                                                   1.2s
+ => [3/6] WORKDIR /app                                                                         0.0s
+ => [4/6] COPY package.json .                                                                  0.0s
+ => [5/6] RUN for i in $(seq 1 6); do echo "installing step $i/6"; sleep 0.5; done             3.1s 
+ => [6/6] RUN echo "build complete" > /app/done.txt                                            0.1s 
+ => exporting to image                                                                         0.1s 
+ => => exporting layers                                                                        0.1s 
+ => => writing image sha256:f7b1a62e95aa73b9a74d8da4cfbe7cec56122d53933cb8cd66a6fae9940d7c58   0.0s 
+ => => naming to docker.io/library/tty-fold-fixture                                            0.0s 
+                                                                                                    
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/gh80j17mvpoplc53jh3xm13nm

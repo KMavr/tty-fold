@@ -12,6 +12,7 @@ Turn raw terminal output into the text a human would have seen on screen.
 
 Captured terminal output is full of things nobody reads: colour codes, spinner frames, progress bars redrawn hundreds of times, screens cleared and drawn again. `tty-fold` replays all of it on a virtual screen and returns only the final result. That makes logs readable, and it makes them much cheaper to hand to an LLM or coding agent.
 
+- **The final screen, not every frame.** Spinners, progress bars and redraws come out as what was last on screen.
 - **Zero runtime dependencies.**
 - **Exact.** Stack traces and diffs come through character for character. Nothing is guessed, summarised or truncated.
 - **Streaming.** A Node `Transform` stream that gives the same output as the one-shot function, however the input is split up.
@@ -120,20 +121,37 @@ What a human sees is what you get. Spaces the program printed are kept, and gaps
 - **Real tab stops.** Tabs are kept as `\t` characters.
 - **Wide characters.** CJK and emoji count as one column, so cursor positioning across them can be off.
 
+## How is this different from strip-ansi?
+
+[`strip-ansi`](https://github.com/chalk/strip-ansi) removes styling, and for output that is only coloured it is the right tool: smaller and faster. `tty-fold` also replays what the codes do: carriage returns, cursor movement and screen clears. So spinners, progress bars and redraws come out as their final state instead of every frame.
+
+A `curl` progress bar has no colour codes at all, so `strip-ansi` leaves all 71 frames in place. `tidy` returns the one line you saw at the end:
+
+```
+############################################################################################# 100.0%
+```
+
+A `docker build` redraws its whole step list several times a second. `strip-ansi` keeps all 57 redraws (26,676 tokens). `tidy` keeps the final list (773 tokens).
+
+On output that is mostly colour, the two save about the same. The total below is dominated by the `docker build` capture. Without it, `strip-ansi` saves 57% and `tidy` 68%.
+
 ## Benchmark
 
 Real captures from a pty, in [`fixtures/`](fixtures). Tokens are counted with [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer). Other tokenizers give different absolute numbers but similar ratios.
 
-| Capture                    | Raw  | tidy | Saved | + collapseRepeats |
-| -------------------------- | ---- | ---- | ----- | ----------------- |
-| `git diff --color`         | 376  | 186  | 51%   | 51%               |
-| `pnpm add` (warm cache)    | 988  | 161  | 84%   | 84%               |
-| Node stack overflow        | 133  | 89   | 33%   | 33%               |
-| `tsc` with errors          | 464  | 191  | 59%   | 59%               |
-| `tsc --watch`, 3 rebuilds  | 1152 | 490  | 57%   | 57%               |
-| `vitest run` with failures | 2904 | 1280 | 56%   | 56%               |
-| Retry loop, 25 equal lines | 473  | 239  | 49%   | 94%               |
-| **Total**                  | 6490 | 2636 | 59%   | 63%               |
+| Capture                              | Raw       | strip-ansi      | tidy           | + collapseRepeats |
+| ------------------------------------ | --------- | --------------- | -------------- | ----------------- |
+| `docker build`, 6 steps              | 37365     | 26676 (29%)     | 773 (98%)      | 773 (98%)         |
+| `curl` progress bar                  | 637       | 637 (0%)        | 8 (99%)        | 8 (99%)           |
+| `pnpm add`, cold cache, 137 packages | 1955      | 420 (79%)       | 244 (88%)      | 244 (88%)         |
+| `pnpm add`, warm cache               | 988       | 222 (78%)       | 161 (84%)      | 161 (84%)         |
+| `git diff --color`                   | 376       | 188 (50%)       | 186 (51%)      | 186 (51%)         |
+| Node stack overflow                  | 133       | 91 (32%)        | 89 (33%)       | 89 (33%)          |
+| `tsc` with errors                    | 464       | 198 (57%)       | 191 (59%)      | 191 (59%)         |
+| `tsc --watch`, 3 rebuilds            | 1152      | 501 (57%)       | 490 (57%)      | 490 (57%)         |
+| `vitest run` with failures           | 2904      | 1370 (53%)      | 1280 (56%)     | 1280 (56%)        |
+| Retry loop, 25 equal lines           | 473       | 240 (49%)       | 239 (49%)      | 27 (94%)          |
+| **Total**                            | **46447** | **30543 (34%)** | **3661 (92%)** | **3449 (93%)**    |
 
 ### Speed
 

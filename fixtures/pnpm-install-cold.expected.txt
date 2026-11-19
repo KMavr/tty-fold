@@ -1,0 +1,21 @@
+Update available! 12.18.0 → 12.21.0.
+Changelog: https://pnpm.io/v/12.21.0
+To update, run: pnpm self-update
+[WARN] deprecated eslint@9.39.1. 10.15.0 is not deprecated.
+Packages are cloned from the content-addressable store to the virtual store.
+  Content-addressable store is at: /home/user/.local/share/pnpm/store/v11
+  Virtual store is at:             node_modules/.pnpm
+Packages: +137
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 137, reused 0, downloaded 137, added 137, done
+
+devDependencies:
++ eslint 9.39.1
++ prettier 3.6.2
++ typescript 5.9.3
++ vitest 3.2.4
+Error: ERR_PNPM_IGNORED_BUILDS
+
+  × adding a new package
+  ╰─▶ Ignored build scripts: esbuild@0.28.2
+  help: Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.
