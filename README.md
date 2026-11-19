@@ -159,6 +159,12 @@ Time grows linearly with input size. On an Apple Silicon laptop, `tidy` processe
 
 Run it yourself with `pnpm bench`.
 
+## Related projects
+
+- [`strip-ansi`](https://github.com/chalk/strip-ansi): removes styling only. The right choice when output is coloured but never redrawn.
+- [`@xterm/headless`](https://github.com/xtermjs/xterm.js/tree/master/headless): a full terminal emulator (about 2 MB). Use it when you need everything a real terminal does, such as the alternate screen or wide characters.
+- [`rtk`](https://github.com/rtk-ai/rtk): a ready-made CLI for coding agents that summarises the output of common commands. Use it if you want a drop-in tool for your agent rather than a library. It shortens output by summarising; `tty-fold` keeps exactly what was on screen.
+
 ## License
 
 [MIT](LICENSE)
