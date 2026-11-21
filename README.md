@@ -3,7 +3,7 @@
 [![CI](https://github.com/KMavr/tty-fold/actions/workflows/ci.yml/badge.svg)](https://github.com/KMavr/tty-fold/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![npm downloads](https://img.shields.io/npm/dm/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
-[![install size](https://packagephobia.com/badge?p=tty-fold)](https://packagephobia.com/result?p=tty-fold)
+[![unpacked size](https://img.shields.io/npm/unpacked-size/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![types](https://img.shields.io/npm/types/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![node](https://img.shields.io/node/v/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![license](https://img.shields.io/npm/l/tty-fold.svg)](LICENSE)
