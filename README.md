@@ -7,6 +7,7 @@
 [![types](https://img.shields.io/npm/types/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![node](https://img.shields.io/node/v/tty-fold.svg)](https://www.npmjs.com/package/tty-fold)
 [![license](https://img.shields.io/npm/l/tty-fold.svg)](LICENSE)
+![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196?logo=conventionalcommits&logoColor=white)
 
 Turn raw terminal output into the text a human would have seen on screen.
 
