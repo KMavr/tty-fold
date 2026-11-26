@@ -13,28 +13,34 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v5
+      - name: Run release-please
+        uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
         if: ${{ steps.release.outputs.release_created }}
 
-      - uses: pnpm/action-setup@v6
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
         if: ${{ steps.release.outputs.release_created }}
 
-      - uses: actions/setup-node@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         if: ${{ steps.release.outputs.release_created }}
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
         if: ${{ steps.release.outputs.release_created }}
 
-      - run: pnpm publish --no-git-checks
+      - name: Publish to npm
+        run: pnpm publish --no-git-checks
         if: ${{ steps.release.outputs.release_created }}
