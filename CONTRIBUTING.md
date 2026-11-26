@@ -53,5 +53,6 @@ Releases are published from CI with npm provenance — no manual `npm publish`.
 
 ### Maintainer note: branch protection
 
-Require only the `ci-success` status check on `main` (**Settings → Branches**). It aggregates the
-whole Node matrix, so changing the matrix in `.github/workflows/ci.yml` never orphans a required check.
+`main` is protected by a ruleset that requires the `ci-success` and `commitlint` status checks and
+allows squash merges only. `ci-success` aggregates the whole Node matrix, so changing the matrix in
+`.github/workflows/ci.yml` never orphans a required check.
